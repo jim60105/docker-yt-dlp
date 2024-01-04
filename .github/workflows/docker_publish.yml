@@ -35,7 +35,7 @@ jobs:
           target: final
           tags: ${{ steps.setup.outputs.tags }}
           labels: ${{ steps.setup.outputs.labels }}
-          build-args: VERSION=${{ github.head_ref || github.ref_name }}
+          build-args: BUILD_VERSION=${{ github.head_ref || github.ref_name }}
           platforms: linux/amd64,linux/arm64
 
   docker-ubi:
@@ -65,7 +65,7 @@ jobs:
           target: final
           tags: ${{ steps.setup.outputs.tags }}
           labels: ${{ steps.setup.outputs.labels }}
-          build-args: VERSION=${{ github.head_ref || github.ref_name }}
+          build-args: BUILD_VERSION=${{ github.head_ref || github.ref_name }}
           platforms: linux/amd64,linux/arm64
 
   docker-distroless:
@@ -95,5 +95,5 @@ jobs:
           target: final
           tags: ${{ steps.setup.outputs.tags }}
           labels: ${{ steps.setup.outputs.labels }}
-          build-args: VERSION=${{ github.head_ref || github.ref_name }}
+          build-args: BUILD_VERSION=${{ github.head_ref || github.ref_name }}
           platforms: linux/amd64,linux/arm64
