@@ -3,9 +3,9 @@ name: docker_publish
 on:
   push:
     branches:
-      - 'master'
+      - "master"
   schedule:
-    - cron:  '0 4 * * 1' # every monday at 4am UTC
+    - cron: "0 4 * * 1" # every monday at 4am UTC
 
   workflow_dispatch:
 

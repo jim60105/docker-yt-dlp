@@ -2,7 +2,7 @@ name: scan
 
 on:
   workflow_run:
-    workflows: 
+    workflows:
       - docker_publish
       - docker_publish_latest
     types: [completed]

@@ -3,7 +3,7 @@ name: docker_publish
 on:
   push:
     tags:
-      - '20*'
+      - "20*"
 
   workflow_dispatch:
 
