@@ -1,0 +1,40 @@
+name: docker_publish
+
+on:
+  push:
+    branches:
+      - 'master'
+  schedule:
+    - cron:  '0 4 * * 1' # every monday at 4am UTC
+
+  workflow_dispatch:
+
+jobs:
+  docker-alpine:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup docker
+        id: setup
+        uses: ./.github/workflows/docker-reused-setup-steps
+        with:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+          QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+          QUAY_TOKEN: ${{ secrets.QUAY_TOKEN }}
+          CR_PAT: ${{ secrets.CR_PAT }}
+          tag: latest
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          target: final
+          tags: ${{ steps.setup.outputs.tags }}
+          labels: ${{ steps.setup.outputs.labels }}
+          platforms: linux/amd64,linux/arm64
