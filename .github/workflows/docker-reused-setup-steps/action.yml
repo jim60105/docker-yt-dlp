@@ -33,7 +33,7 @@ runs:
       with:
         images: ${{ inputs.DOCKERHUB_USERNAME }}/yt-dlp,ghcr.io/${{ github.repository_owner }}/yt-dlp,quay.io/${{ github.repository_owner }}/yt-dlp
         flavor: |
-          latest=${{ inputs.tag == 'alpine' || inputs.tag == 'latest' }}
+          latest=${{ inputs.tag == 'latest' }}
         tags: |
           type=ref,event=tag,enable=${{ inputs.tag == 'alpine' }}
           type=ref,suffix=-${{ inputs.tag }},event=tag
