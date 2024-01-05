@@ -25,15 +25,9 @@ ENV PATH="/venv/bin:$PATH"
 ARG PIP_DISABLE_PIP_VERSION_CHECK=1
 ARG PIP_NO_CACHE_DIR=1
 
-RUN microdnf -y install python3.11-pip && \
-    microdnf -y clean all && \
-    ln -s /usr/bin/pip3.11 /usr/bin/pip3
-
 RUN pip3.11 install --no-cache-dir dumb-init yt-dlp==$BUILD_VERSION && \
     pip3.11 uninstall -y setuptools pip && \
-    pip3.11 uninstall -y setuptools && \
-    microdnf -y remove python3.11-pip && \
-    microdnf -y clean all 
+    rm -rf /root/.cache/pip
 
 ### Final image
 FROM base AS final

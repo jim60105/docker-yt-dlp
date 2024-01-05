@@ -10,7 +10,7 @@ RUN pip3.12 install --no-cache-dir yt-dlp==$BUILD_VERSION && \
 FROM build as final
 
 # Use dumb-init to handle signals
-RUN apk add --no-cache dumb-init py3-mutagen ffmpeg
+RUN apk add --no-cache dumb-init ffmpeg
 
 RUN mkdir -p /download && chown 1001:1001 /download
 VOLUME [ "/download" ]
