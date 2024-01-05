@@ -19,26 +19,29 @@ The `[OPTIONS]`, `[URL...]` placeholder should be replaced with the options and 
 
 You can find all available tags at [ghcr.io](https://github.com/jim60105/yt-dlp/pkgs/container/yt-dlp/versions?filters%5Bversion_type%5D=tagged) or [quay.io](https://quay.io/repository/jim60105/yt-dlp?tab=tags).
 
-## Available tags
+## Building the Docker Image
 
-This repository contains three Dockerfiles for building Docker images based on different base images:
+### Dockerfiles
+
+This repository contains four Dockerfiles for building Docker images based on different base images:
 
 | Dockerfile                                     | Base Image                                                                                                                         |
 | ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| [Dockerfile](Dockerfile)                       | [Alpine official image](https://hub.docker.com/_/alpine/)                                                                          |
 | [alpine.Dockerfile](alpine.Dockerfile)         | [Python official image 3.12-alpine](https://hub.docker.com/_/python/)                                                              |
 | [ubi.Dockerfile](ubi.Dockerfile)               | [Red Hat Universal Base Image 9 Minimal](https://catalog.redhat.com/software/containers/ubi9/ubi-minimal/615bd9b4075b022acc111bf5) |
-| [distroless.Dockerfile](distroless.Dockerfile) | [Google Distroless python3-debian12](https://github.com/GoogleContainerTools/distroless)                                           |
+| [distroless.Dockerfile](distroless.Dockerfile) | [distroless-python](https://github.com/alexdmoss/distroless-python)                                                                |
 
-And, built with the following code version of yt-dlp: 2023.12.30, 2023.11.16, 2023.10.13.
+### Build Arguments
 
-| Code Version                                                                | Alpine                    | UBI          | Distroless          |
-| --------------------------------------------------------------------------- | ------------------------- | ------------ | ------------------- |
-| [2023.12.30](https://github.com/yt-dlp/yt-dlp/releases/tag/2023.12.30) | `2023.12.30`, `2023.12.30-alpine` | `2023.12.30-ubi` | `2023.12.30-distroless` |
-| [2023.11.16](https://github.com/yt-dlp/yt-dlp/releases/tag/2023.11.16) | `2023.11.16`, `2023.11.16-alpine` | `2023.11.16-ubi` | `2023.11.16-distroless` |
-| [2023.10.13](https://github.com/yt-dlp/yt-dlp/releases/tag/2023.10.13) | `2023.10.13`, `2023.10.13-alpine` | `2023.10.13-ubi` | `2023.10.13-distroless` |
+The [alpine.Dockerfile](alpine.Dockerfile), [ubi.Dockerfile](ubi.Dockerfile), ans [distroless.Dockerfile](distroless.Dockerfile) are built using a build argument called `BUILD_VERSION`. This argument represents [the release version of yt-dlp](https://github.com/yt-dlp/yt-dlp/tags), such as `2023.12.30` or `2023.11.16`.
 
-> [!TIP]
-> I've notice that that both the UBI version and the Distroless version offer no advantages over the Alpine version. So _**please use the Alpine version**_ unless you have specific reasons not to. All of these base images are great, some of them were simply not that suitable for our project.
+It is important to note that the [Dockerfile](Dockerfile) always builds with [the latest apk package source](https://pkgs.alpinelinux.org/package/edge/community/aarch64/yt-dlp), so it can't set the build version explicitly.
+
+> [!NOTE]
+>
+> -   The apk edge branch follows the latest release of yt-dlp.
+> -   The `alpine.Dockerfile` installs yt-dlp from pip source, so the image size may increases slightly compared to the `Dockerfile` even when they have the same version.
 
 ### Build Command
 
@@ -46,11 +49,15 @@ And, built with the following code version of yt-dlp: 2023.12.30, 2023.11.16, 20
 > If you are using an earlier version of the docker client, it is necessary to [enable the BuildKit mode](https://docs.docker.com/build/buildkit/#getting-started) when building the image. This is because I used the `COPY --link` feature which enhances the build performance and was introduced in Buildx v0.8.  
 > With the Docker Engine 23.0 and Docker Desktop 4.19, Buildx has become the default build client. So you won't have to worry about this when using the latest version.
 
-For example, if you want to build the alpine image:
-
 ```bash
-docker build -f alpine.Dockerfile -t yt-dlp:alpine .
+docker build -t yt-dlp .
+docker build --build-arg BUILD_VERSION=2023.12.30 -f ./alpine.Dockerfile -t yt-dlp:alpine .
+docker build --build-arg BUILD_VERSION=2023.12.30 -f ./ubi.Dockerfile -t yt-dlp:ubi .
+docker build --build-arg BUILD_VERSION=2023.12.30 -f ./distroless.Dockerfile -t yt-dlp:distroless .
 ```
+
+> [!TIP]
+> I've notice that that both the UBI version and the Distroless version offer no advantages over the Alpine version. So _**please use the Alpine version**_ unless you have specific reasons not to. All of these base images are great, some of them were simply not that suitable for our project.
 
 ## LICENSE
 
@@ -62,9 +69,9 @@ docker build -f alpine.Dockerfile -t yt-dlp:alpine .
 > [!CAUTION]
 > A GPLv3 licensed Dockerfile means that you _**MUST**_ **distribute the source code with the same license**, if you
 >
-> - Re-distribute the image. (You can simply point to this GitHub repository if you doesn't made any code changes.)
-> - Distribute a image that uses code from this repository.
-> - Or **distribute a image based on this image**. (`FROM ghcr.io/jim60105/yt-dlp` in your Dockerfile)
+> -   Re-distribute the image. (You can simply point to this GitHub repository if you doesn't made any code changes.)
+> -   Distribute a image that uses code from this repository.
+> -   Or **distribute a image based on this image**. (`FROM ghcr.io/jim60105/yt-dlp` in your Dockerfile)
 >
 > "Distribute" means to make the image available for other people to download, usually by pushing it to a public registry. If you are solely using it for your personal purposes, this has no impact on you.
 >
