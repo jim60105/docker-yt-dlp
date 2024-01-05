@@ -1,25 +1,22 @@
 # syntax=docker/dockerfile:1
 
-FROM python:3.11-slim-bookworm as build
+FROM python:3.12-slim-bookworm as build
 
 ARG BUILD_VERSION
 
 WORKDIR /app
 
-RUN python3.11 -m venv /venv
+RUN python3.12 -m venv /venv
 ENV PATH="/venv/bin:$PATH"
 
-RUN pip3.11 install --no-cache-dir dumb-init yt-dlp==$BUILD_VERSION && \
-    pip3.11 uninstall -y setuptools pip && \
-    pip3.11 uninstall -y setuptools pip
+RUN pip3.12 install --no-cache-dir dumb-init yt-dlp==$BUILD_VERSION && \
+    pip3.12 uninstall -y setuptools pip && \
+    pip3.12 uninstall -y setuptools pip
 
 # Make a directory for COPY to final (distroless has no mkdir)
 RUN mkdir -p /download
 
-# The /venv/bin/python3.11 in build stage is a symlink to /usr/local/bin/python3.11 but the python3.11 in distroless is in /usr/bin/python3.11
-RUN ln -sf /usr/bin/python3 /venv/bin/python3.11
-
-FROM gcr.io/distroless/python3-debian12 as final
+FROM al3xos/python-distroless:3.12-debian12 as final
 
 ENV PATH="/venv/bin:$PATH"
 
