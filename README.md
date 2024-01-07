@@ -41,7 +41,7 @@ It is important to note that the [Dockerfile](Dockerfile) always builds with [th
 > [!NOTE]
 >
 > -   The apk edge branch follows the latest release of yt-dlp.
-> -   The `alpine.Dockerfile` installs yt-dlp from pip source, so the image size may increases slightly compared to the `Dockerfile` even when they have the same version.
+> -   The `alpine.Dockerfile` installs yt-dlp from pip source, so the image size may slightly different compared to the `Dockerfile` even when they have the same version.
 
 ### Build Command
 
