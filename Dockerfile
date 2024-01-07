@@ -1,21 +1,29 @@
 # syntax=docker/dockerfile:1
+ARG UID=1001
 
-FROM alpine as final
+FROM alpine:3 as final
 
-# This branch follows the yt-dlp release
-RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
-# Use dumb-init to handle signals
-RUN apk add -U --no-cache dumb-init yt-dlp
+ARG UID
 
-RUN mkdir -p /download && chown 1001:1001 /download
-VOLUME [ "/download" ]
+RUN apk add -u --no-cache \
+    # This branch follows the yt-dlp release
+    -X "http://dl-cdn.alpinelinux.org/alpine/edge/community" \
+    # ffmpeg is one of the dependencies of yt-dlp, so don't need to install it manually
+    yt-dlp \
+    # Use dumb-init to handle signals
+    dumb-init
+
+# Create user
+RUN addgroup -g $UID $UID && \
+    adduser -H -g "" -D $UID -u $UID -G $UID
 
 # Remove these to prevent the container from executing arbitrary commands
 RUN rm /bin/echo /bin/ln /bin/rm /bin/sh
 
 # Run as non-root user
-USER 1001
+USER $UID
 WORKDIR /download
+VOLUME [ "/download" ]
 
 STOPSIGNAL SIGINT
 ENTRYPOINT [ "dumb-init", "--", "yt-dlp", "--no-cache-dir" ]
