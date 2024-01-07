@@ -1,39 +1,40 @@
 # syntax=docker/dockerfile:1
 
-FROM python:3.12-slim-bookworm as build
+FROM python:3.12-bookworm as build
+
+# RUN mount cache for multi-arch: https://github.com/docker/buildx/issues/549#issuecomment-1788297892
+ARG TARGETARCH
+ARG TARGETVARIANT
 
 ARG BUILD_VERSION
 
 WORKDIR /app
 
-RUN python3.12 -m venv /venv
-ENV PATH="/venv/bin:$PATH"
+# Install under /root/.local
+ENV PIP_USER="true"
 
-RUN pip3.12 install --no-cache-dir dumb-init yt-dlp==$BUILD_VERSION && \
-    pip3.12 uninstall -y setuptools pip && \
-    pip3.12 uninstall -y setuptools pip
+RUN --mount=type=cache,id=pip-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/pip \
+    pip3.12 install dumb-init yt-dlp==$BUILD_VERSION && \
+    # Cleanup
+    find "/root/.local" -name '*.pyc' -print0 | xargs -0 rm -f || true ; \
+    find "/root/.local" -type d -name '__pycache__' -print0 | xargs -0 rm -rf || true ;
 
-# Make a directory for COPY to final (distroless has no mkdir)
-RUN mkdir -p /download
-
+# Distroless image use monty(1000) for non-root user
 FROM al3xos/python-distroless:3.12-debian12 as final
-
-ENV PATH="/venv/bin:$PATH"
-
-# Copy venv
-COPY --link --from=build /venv /venv
 
 # ffmpeg
 COPY --link --from=mwader/static-ffmpeg:6.1.1 /ffmpeg /usr/bin/
-COPY --link --from=mwader/static-ffmpeg:6.1.1 /ffprobe /usr/local/bin/
+COPY --link --from=mwader/static-ffmpeg:6.1.1 /ffprobe /usr/bin/
 
-COPY --link --from=build --chown=1001:1001 /download /download
+# Copy dist and support arbitrary user ids (OpenShift best practice)
+# https://docs.openshift.com/container-platform/4.14/openshift_images/create-images.html#use-uid_create-images
+COPY --chown=1000:0 --chmod=774 \
+    --from=build /root/.local /home/monty/.local
+ENV PATH="/home/monty/.local/bin:$PATH"
+
+WORKDIR /download
 VOLUME [ "/download" ]
 
-# Run as non-root user
-USER 1001
-WORKDIR /download
-
 STOPSIGNAL SIGINT
-ENTRYPOINT [ "dumb-init", "--", "/venv/bin/yt-dlp", "--no-cache-dir" ]
+ENTRYPOINT [ "dumb-init", "--", "yt-dlp", "--no-cache-dir" ]
 CMD ["--help"]
