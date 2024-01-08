@@ -1,5 +1,6 @@
 # syntax=docker/dockerfile:1
 ARG UID=1001
+ARG BUILD_VERSION=2023.12.30
 
 FROM python:3.12-alpine as build
 
@@ -13,6 +14,8 @@ WORKDIR /app
 
 # Install under /root/.local
 ENV PIP_USER="true"
+ARG PIP_NO_WARN_SCRIPT_LOCATION=0
+ARG PIP_ROOT_USER_ACTION="ignore"
 
 RUN --mount=type=cache,id=pip-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/pip \
     pip3.12 install yt-dlp==$BUILD_VERSION && \

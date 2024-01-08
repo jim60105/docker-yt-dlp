@@ -1,5 +1,6 @@
 # syntax=docker/dockerfile:1
 ARG UID=1001
+ARG BUILD_VERSION=2023.12.30
 
 ### Python
 FROM registry.access.redhat.com/ubi9/ubi-minimal AS base
@@ -16,7 +17,7 @@ RUN ln -s /usr/bin/python3.11 /usr/bin/python3 && \
 ### Build image
 FROM base AS build
 
-RUN microdnf --setopt=install_weak_deps=0 --setopt=tsflags=nodocs -y install python3.11-pip && \
+RUN microdnf --setopt=install_weak_deps=0 --setopt=tsflags=nodocs -y install python3.11-pip findutils && \
     microdnf -y clean all
 
 # RUN mount cache for multi-arch: https://github.com/docker/buildx/issues/549#issuecomment-1788297892
@@ -29,8 +30,8 @@ WORKDIR /app
 
 # Install under /root/.local
 ENV PIP_USER="true"
-
-ARG PIP_DISABLE_PIP_VERSION_CHECK=1
+ARG PIP_NO_WARN_SCRIPT_LOCATION=0
+ARG PIP_ROOT_USER_ACTION="ignore"
 
 RUN --mount=type=cache,id=pip-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/pip \
     pip3.11 install dumb-init yt-dlp==$BUILD_VERSION && \
@@ -44,7 +45,7 @@ FROM base AS final
 ARG UID
 
 # ffmpeg
-COPY --link --from=mwader/static-ffmpeg:6.1.1 /ffmpeg /usr/bin/
+COPY --link --from=mwader/static-ffmpeg:6.1.1 /ffmpeg /usr/local/bin/
 COPY --link --from=mwader/static-ffmpeg:6.1.1 /ffprobe /usr/local/bin/
 
 # Copy dist and support arbitrary user ids (OpenShift best practice)
