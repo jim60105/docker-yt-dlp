@@ -31,7 +31,11 @@ RUN pip3.12 uninstall -y setuptools pip wheel && \
     rm -rf /root/.cache/pip
 
 # Use dumb-init to handle signals
-RUN apk add -u --no-cache dumb-init ffmpeg
+RUN apk add -u --no-cache dumb-init
+
+# ffmpeg (6.1 is broken, so override it)
+COPY --link --from=mwader/static-ffmpeg:6.1.1 /ffmpeg /usr/bin/
+COPY --link --from=mwader/static-ffmpeg:6.1.1 /ffprobe /usr/bin/
 
 # Create user
 RUN addgroup -g $UID $UID && \

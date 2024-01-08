@@ -13,6 +13,10 @@ RUN apk add -u --no-cache \
     # Use dumb-init to handle signals
     dumb-init
 
+# ffmpeg (6.1 is broken, so override it)
+COPY --link --from=mwader/static-ffmpeg:6.1.1 /ffmpeg /usr/bin/
+COPY --link --from=mwader/static-ffmpeg:6.1.1 /ffprobe /usr/bin/
+
 # Create user
 RUN addgroup -g $UID $UID && \
     adduser -H -g "" -D $UID -u $UID -G $UID
