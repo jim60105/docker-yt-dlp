@@ -6,8 +6,9 @@ FROM alpine:3 as final
 ARG UID
 
 RUN apk add -u --no-cache \
-    # This branch follows the yt-dlp release
-    -X "http://dl-cdn.alpinelinux.org/alpine/edge/community" \
+    # These branches follows the yt-dlp release
+    -X "https://dl-cdn.alpinelinux.org/alpine/edge/main" \
+    -X "https://dl-cdn.alpinelinux.org/alpine/edge/community" \
     # ffmpeg is one of the dependencies of yt-dlp, so don't need to install it manually
     yt-dlp \
     # Use dumb-init to handle signals
