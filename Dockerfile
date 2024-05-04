@@ -40,8 +40,7 @@ ARG TARGETVARIANT
 
 # Create user
 ARG UID
-RUN addgroup -g $UID $UID && \
-    adduser -H -g "" -D $UID -u $UID -G $UID
+RUN adduser -H -g "" -D $UID -u $UID -G root
 
 # Create directories with correct permissions
 RUN install -d -m 775 -o $UID -g 0 /download && \
@@ -68,7 +67,7 @@ RUN --mount=type=cache,id=apk-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/v
 # Remove these to prevent the container from executing arbitrary commands
 RUN rm /bin/echo /bin/ln /bin/rm /bin/sh
 
-WORKDIR /app
+WORKDIR /download
 
 VOLUME [ "/download" ]
 
