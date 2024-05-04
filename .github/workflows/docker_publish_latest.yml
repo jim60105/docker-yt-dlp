@@ -43,4 +43,12 @@ jobs:
           target: final
           tags: ${{ steps.setup.outputs.tags }}
           labels: ${{ steps.setup.outputs.labels }}
+          build-args: |
+            VERSION=latest
+            RELEASE=${{ github.run_number }}
           platforms: linux/amd64,linux/arm64
+          # Cache to regietry instead of gha to avoid the capacity limit.
+          cache-from: type=registry,ref=ghcr.io/${{ github.repository_owner }}/yt-dlp:cache
+          cache-to: type=registry,ref=ghcr.io/${{ github.repository_owner }}/yt-dlp:cache,mode=max
+          sbom: true
+          provenance: true
