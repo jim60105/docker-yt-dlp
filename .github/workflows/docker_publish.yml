@@ -7,6 +7,11 @@ on:
 
   workflow_dispatch:
 
+# Sets the permissions granted to the GITHUB_TOKEN for the actions in this job.
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   docker-alpine:
     runs-on: ubuntu-latest
@@ -23,7 +28,6 @@ jobs:
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
           QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
           QUAY_TOKEN: ${{ secrets.QUAY_TOKEN }}
-          CR_PAT: ${{ secrets.CR_PAT }}
           tag: alpine
 
       - name: Build and push
@@ -53,7 +57,6 @@ jobs:
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
           QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
           QUAY_TOKEN: ${{ secrets.QUAY_TOKEN }}
-          CR_PAT: ${{ secrets.CR_PAT }}
           tag: ubi
 
       - name: Build and push
@@ -83,7 +86,6 @@ jobs:
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
           QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
           QUAY_TOKEN: ${{ secrets.QUAY_TOKEN }}
-          CR_PAT: ${{ secrets.CR_PAT }}
           tag: distroless
 
       - name: Build and push
