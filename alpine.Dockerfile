@@ -39,7 +39,7 @@ RUN pip3.12 uninstall -y setuptools pip wheel && \
 
 # Create user
 ARG UID
-RUN adduser -H -g "" -D $UID -u $UID -G root
+RUN adduser -g "" -D $UID -u $UID -G root
 
 # Create directories with correct permissions
 RUN install -d -m 775 -o $UID -g 0 /download && \
