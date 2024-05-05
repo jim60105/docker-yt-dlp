@@ -40,14 +40,10 @@ It is important to note that the [Dockerfile](Dockerfile) always builds with [th
 
 > [!NOTE]
 >
-> -   The apk edge branch follows the latest release of yt-dlp.
-> -   The `alpine.Dockerfile` installs yt-dlp from pip source, so the image size may slightly different compared to the `Dockerfile` even when they have the same version.
+> - The apk edge branch follows the latest release of yt-dlp.
+> - The `alpine.Dockerfile` installs yt-dlp from pip source, so the image size may slightly different compared to the `Dockerfile` even when they have the same version.
 
 ### Build Command
-
-> [!NOTE]  
-> If you are using an earlier version of the docker client, it is necessary to [enable the BuildKit mode](https://docs.docker.com/build/buildkit/#getting-started) when building the image. This is because I used the `COPY --link` feature which enhances the build performance and was introduced in Buildx v0.8.  
-> With the Docker Engine 23.0 and Docker Desktop 4.19, Buildx has become the default build client. So you won't have to worry about this when using the latest version.
 
 ```bash
 docker build -t yt-dlp .
@@ -59,23 +55,16 @@ docker build --build-arg BUILD_VERSION=2023.12.30 -f ./distroless.Dockerfile -t 
 > [!TIP]
 > I've notice that that both the UBI version and the Distroless version offer no advantages over the Alpine version. So _**please use the Alpine version**_ unless you have specific reasons not to. All of these base images are great, some of them were simply not that suitable for our project.
 
+> [!NOTE]  
+> If you are using an earlier version of the docker client, it is necessary to [enable the BuildKit mode](https://docs.docker.com/build/buildkit/#getting-started) when building the image. This is because I used the `COPY --link` feature which enhances the build performance and was introduced in Buildx v0.8.  
+> With the Docker Engine 23.0 and Docker Desktop 4.19, Buildx has become the default build client. So you won't have to worry about this when using the latest version.
+
 ## LICENSE
 
 > [!NOTE]  
 > The main program, [yt-dlp/yt-dlp](https://github.com/yt-dlp/yt-dlp), is distributed under [Unlicense license](https://github.com/yt-dlp/yt-dlp/blob/master/LICENSE).  
 > Please consult their repository for access to the source code and licenses.  
 > The following is the license for the Dockerfiles and CI workflows in this repository.
-
-> [!CAUTION]
-> A GPLv3 licensed Dockerfile means that you _**MUST**_ **distribute the source code with the same license**, if you
->
-> -   Re-distribute the image. (You can simply point to this GitHub repository if you doesn't made any code changes.)
-> -   Distribute a image that uses code from this repository.
-> -   Or **distribute a image based on this image**. (`FROM ghcr.io/jim60105/yt-dlp` in your Dockerfile)
->
-> "Distribute" means to make the image available for other people to download, usually by pushing it to a public registry. If you are solely using it for your personal purposes, this has no impact on you.
->
-> Please consult the [LICENSE](LICENSE) for more details.
 
 <img src="https://github.com/jim60105/docker-yt-dlp/assets/16995691/f33f8175-af23-4a8a-ad69-efd17a7625f4" alt="gplv3" width="300" />
 
@@ -86,3 +75,14 @@ This program is free software: you can redistribute it and/or modify it under th
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+> [!CAUTION]
+> A GPLv3 licensed Dockerfile means that you _**MUST**_ **distribute the source code with the same license**, if you
+>
+> - Re-distribute the image. (You can simply point to this GitHub repository if you doesn't made any code changes.)
+> - Distribute a image that uses code from this repository.
+> - Or **distribute a image based on this image**. (`FROM ghcr.io/jim60105/yt-dlp` in your Dockerfile)
+>
+> "Distribute" means to make the image available for other people to download, usually by pushing it to a public registry. If you are solely using it for your personal purposes, this has no impact on you.
+>
+> Please consult the [LICENSE](LICENSE) for more details.
