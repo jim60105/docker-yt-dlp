@@ -24,6 +24,9 @@ RUN install -d -m 775 -o $UID -g 0 /download && \
 COPY --link --chown=$UID:0 --chmod=775 LICENSE /licenses/Dockerfile.LICENSE
 COPY --link --chown=$UID:0 --chmod=775 yt-dlp/LICENSE /licenses/yt-dlp.LICENSE
 
+# Ensure the cache is not reused when installing yt-dlp
+ARG RELEASE=0
+
 RUN --mount=type=cache,id=apk-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/var/cache/apk \
     --mount=from=ghcr.io/jim60105/static-ffmpeg-upx:7.0-1,source=/ffmpeg,target=/ffmpeg,rw \
     --mount=from=ghcr.io/jim60105/static-ffmpeg-upx:7.0-1,source=/ffprobe,target=/ffprobe,rw \
