@@ -6,7 +6,7 @@ ARG RELEASE=0
 ########################################
 # Final stage
 ########################################
-FROM alpine:3 as final
+FROM alpine:3 AS final
 
 # RUN mount cache for multi-arch: https://github.com/docker/buildx/issues/549#issuecomment-1788297892
 ARG TARGETARCH

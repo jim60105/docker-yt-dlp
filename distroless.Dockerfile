@@ -5,7 +5,7 @@ ARG RELEASE=0
 ########################################
 # Build stage
 ########################################
-FROM python:3.12-bookworm as build
+FROM python:3.12-bookworm AS build
 
 # RUN mount cache for multi-arch: https://github.com/docker/buildx/issues/549#issuecomment-1788297892
 ARG TARGETARCH
@@ -34,7 +34,7 @@ RUN --mount=type=cache,id=pip-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/r
 # Final stage
 # Distroless image use monty(1000) for non-root user
 ########################################
-FROM al3xos/python-distroless:3.12-debian12 as final
+FROM al3xos/python-distroless:3.12-debian12 AS final
 
 ARG UID=1000
 

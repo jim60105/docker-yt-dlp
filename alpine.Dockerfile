@@ -6,7 +6,7 @@ ARG RELEASE=0
 ########################################
 # Build stage
 ########################################
-FROM python:3.12-alpine as build
+FROM python:3.12-alpine AS build
 
 # RUN mount cache for multi-arch: https://github.com/docker/buildx/issues/549#issuecomment-1788297892
 ARG TARGETARCH
@@ -32,7 +32,7 @@ RUN --mount=type=cache,id=pip-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/r
 ########################################
 # Final stage
 ########################################
-FROM python:3.12-alpine as final
+FROM python:3.12-alpine AS final
 
 RUN pip3.12 uninstall -y setuptools pip wheel && \
     rm -rf /root/.cache/pip
