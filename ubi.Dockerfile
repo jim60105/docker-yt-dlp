@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 ARG UID=1001
-ARG VERSION=2024.04.09
+ARG VERSION=2024.11.04
 ARG RELEASE=0
 
 ########################################
@@ -45,7 +45,7 @@ ARG PIP_DISABLE_PIP_VERSION_CHECK="true"
 ARG VERSION
 RUN --mount=type=cache,id=pip-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/pip \
     pip3.11 install -U --force-reinstall pip setuptools wheel && \
-    pip3.11 install yt-dlp==$VERSION && \
+    pip3.11 install yt-dlp[default]==$VERSION && \
     # Cleanup
     find "/root/.local" -name '*.pyc' -print0 | xargs -0 rm -f || true ; \
     find "/root/.local" -type d -name '__pycache__' -print0 | xargs -0 rm -rf || true ;
