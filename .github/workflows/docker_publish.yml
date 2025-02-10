@@ -33,7 +33,7 @@ jobs:
           tag: alpine
 
       - name: Build and push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ./alpine.Dockerfile
@@ -71,7 +71,7 @@ jobs:
           tag: ubi
 
       - name: Build and push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ./ubi.Dockerfile
@@ -109,7 +109,7 @@ jobs:
           tag: distroless
 
       - name: Build and push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ./distroless.Dockerfile
