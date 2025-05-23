@@ -4,14 +4,19 @@ description: Configure the docker workflow.
 
 inputs:
   DOCKERHUB_USERNAME:
+    description: "DockerHub username"
     required: true
   DOCKERHUB_TOKEN:
+    description: "DockerHub access token"
     required: true
   QUAY_USERNAME:
+    description: "Quay username"
     required: true
   QUAY_TOKEN:
+    description: "Quay access token"
     required: true
   tag:
+    description: "Tag for the image"
     required: true
 
 outputs:
