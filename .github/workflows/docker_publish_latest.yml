@@ -35,6 +35,7 @@ jobs:
           tag: latest
 
       - name: Build and push
+        id: build_push
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -52,3 +53,21 @@ jobs:
           cache-to: type=registry,ref=ghcr.io/${{ github.repository_owner }}/yt-dlp:cache,mode=max
           sbom: true
           provenance: true
+          
+      - name: Add attestations for GitHub Container Registry
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ghcr.io/${{ github.repository_owner }}/yt-dlp
+          subject-digest: ${{ steps.build_push.outputs.digest }}
+
+      - name: Add attestations for DockerHub
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ${{ secrets.DOCKERHUB_USERNAME }}/yt-dlp
+          subject-digest: ${{ steps.build_push.outputs.digest }}
+
+      - name: Add attestations for Quay
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: quay.io/${{ github.repository_owner }}/yt-dlp
+          subject-digest: ${{ steps.build_push.outputs.digest }}
