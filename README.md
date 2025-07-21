@@ -79,6 +79,9 @@ YouTube has implemented bot detection that may block download requests, resultin
 
 The POT provider helps simulate a genuine client by generating proof-of-origin tokens that YouTube's servers expect from legitimate browser-based requests.
 
+> [!WARNING]
+> Providing a PO token does not guarantee bypassing 403 errors or bot checks, but it may help your traffic seem more legitimate to YouTube's servers.
+
 ### Usage with POT Provider
 
 Use the POT variant with the `:pot` tag:
@@ -87,11 +90,8 @@ Use the POT variant with the `:pot` tag:
 docker run -it -v ".:/download" ghcr.io/jim60105/yt-dlp:pot [OPTIONS] [--] URL [URL...]
 ```
 
-> [!WARNING]
-> Providing a PO token does not guarantee bypassing 403 errors or bot checks, but it may help your traffic seem more legitimate to YouTube's servers.
+The POT provider runs as a background service within the container and automatically provides tokens to yt-dlp when needed. No additional configuration is required for basic usage.
 
-> [!NOTE]
-> The POT provider runs as a background service within the container and automatically provides tokens to yt-dlp when needed. No additional configuration is required for basic usage.
 ## LICENSE
 
 > [!NOTE]  
@@ -99,23 +99,25 @@ docker run -it -v ".:/download" ghcr.io/jim60105/yt-dlp:pot [OPTIONS] [--] URL [
 > Please consult their repository for access to the source code and licenses.  
 > The following is the license for the Dockerfiles and CI workflows in this repository.
 
+> [!CAUTION]  
+> A GPLv3 licensed Containerfile means that you _**MUST**_ **distribute the source code with the same license**, if you
+>
+> - Re-distribute the image. (You can simply point to this GitHub repository if you doesn't made any code changes.)
+> - Distribute an image that uses code from this repository.
+> - Or **distribute an image based on this image**. (`FROM ghcr.io/jim60105/yt-dlp` in your Containerfile)
+>
+> "Distribute" means to make the image available for other people to download, usually by pushing it to a public registry. If you are solely using it for your personal purposes, this has no impact on you.
+>
+> Please consult the [LICENSE](LICENSE) for more details.
+
 <img src="https://github.com/jim60105/docker-yt-dlp/assets/16995691/f33f8175-af23-4a8a-ad69-efd17a7625f4" alt="gplv3" width="300" />
 
 [GNU GENERAL PUBLIC LICENSE Version 3](LICENSE)
+
+Copyright (C) 2024 Jim Chen <Jim@ChenJ.im>.
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
-
-> [!CAUTION]
-> A GPLv3 licensed Dockerfile means that you _**MUST**_ **distribute the source code with the same license**, if you
->
-> - Re-distribute the image. (You can simply point to this GitHub repository if you doesn't made any code changes.)
-> - Distribute a image that uses code from this repository.
-> - Or **distribute a image based on this image**. (`FROM ghcr.io/jim60105/yt-dlp` in your Dockerfile)
->
-> "Distribute" means to make the image available for other people to download, usually by pushing it to a public registry. If you are solely using it for your personal purposes, this has no impact on you.
->
-> Please consult the [LICENSE](LICENSE) for more details.
