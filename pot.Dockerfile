@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 ARG UID=1001
-ARG VERSION=EDGE
+ARG VERSION=2025.06.30
 ARG RELEASE=0
 ARG POT_PROVIDER_VERSION=1.1.0
 
@@ -52,10 +52,11 @@ COPY --link --from=ghcr.io/jim60105/static-ffmpeg-upx:7.1.1 /ffprobe /usr/bin/
 COPY --link --from=ghcr.io/jim60105/static-ffmpeg-upx:7.1.1 /dumb-init /usr/bin/
 
 # Ensure the cache is not reused when installing yt-dlp
-ARG RELEASE=0
+ARG RELEASE
+ARG VERSION
 
 # yt-dlp
-ADD --link --chown=$UID:0 --chmod=775 https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux /usr/bin/yt-dlp
+ADD --link --chown=$UID:0 --chmod=775 https://github.com/yt-dlp/yt-dlp/releases/download/${VERSION}/yt-dlp_linux /usr/bin/yt-dlp
 
 WORKDIR /download
 
