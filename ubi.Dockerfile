@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 ARG UID=1001
-ARG VERSION=2024.11.04
+ARG VERSION=2025.06.30
 ARG RELEASE=0
 
 ########################################

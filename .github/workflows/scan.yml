@@ -67,6 +67,17 @@ jobs:
           template: "@.github/workflows/scan/html.tpl"
           output: "trivy-results-distroless.html"
 
+      - name: Run Trivy vulnerability scanner for pot image
+        uses: aquasecurity/trivy-action@0.29.0
+        with:
+          image-ref: "ghcr.io/jim60105/yt-dlp:pot"
+          vuln-type: "os,library"
+          scanners: vuln
+          severity: "CRITICAL,HIGH"
+          format: "template"
+          template: "@.github/workflows/scan/html.tpl"
+          output: "trivy-results-pot.html"
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:

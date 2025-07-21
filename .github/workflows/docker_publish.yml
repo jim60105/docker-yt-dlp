@@ -185,3 +185,60 @@ jobs:
         with:
           subject-name: quay.io/${{ github.repository_owner }}/yt-dlp
           subject-digest: ${{ steps.build_push.outputs.digest }}
+
+  docker-pot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: "true"
+
+      - name: Setup docker
+        id: setup
+        uses: ./.github/workflows/docker-reused-setup-steps
+        with:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+          QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+          QUAY_TOKEN: ${{ secrets.QUAY_TOKEN }}
+          tag: pot
+
+      - name: Build and push
+        id: build_push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./pot.Dockerfile
+          push: true
+          target: final
+          tags: ${{ steps.setup.outputs.tags }}
+          labels: ${{ steps.setup.outputs.labels }}
+          build-args: |
+            VERSION=${{ github.head_ref || github.ref_name }}
+            RELEASE=${{ github.run_number }}
+          platforms: linux/amd64,linux/arm64
+          # Cache to registry instead of gha to avoid the capacity limit.
+          cache-from: type=registry,ref=ghcr.io/${{ github.repository_owner }}/yt-dlp:cache
+          cache-to: type=registry,ref=ghcr.io/${{ github.repository_owner }}/yt-dlp:cache,mode=max
+          sbom: true
+          provenance: true
+          
+      - name: Add attestations for GitHub Container Registry
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ghcr.io/${{ github.repository_owner }}/yt-dlp
+          subject-digest: ${{ steps.build_push.outputs.digest }}
+
+      - name: Add attestations for DockerHub
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ${{ secrets.DOCKERHUB_USERNAME }}/yt-dlp
+          subject-digest: ${{ steps.build_push.outputs.digest }}
+
+      - name: Add attestations for Quay
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: quay.io/${{ github.repository_owner }}/yt-dlp
+          subject-digest: ${{ steps.build_push.outputs.digest }}

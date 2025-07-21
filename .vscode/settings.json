@@ -2,6 +2,7 @@
     "cSpell.words": [
         "adduser",
         "autofc",
+        "bgutil",
         "Buildx",
         "Distroless",
         "Dockerfiles",
@@ -9,6 +10,7 @@
         "ffprobe",
         "outtmpl",
         "Snyk",
-        "Trivy"
+        "Trivy",
+        "ytdlp"
     ]
 }
