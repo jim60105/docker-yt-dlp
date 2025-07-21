@@ -12,12 +12,16 @@ Mount the current directory as `/download` and run yt-dlp with additional input 
 The downloaded files will be saved to where you run the command.
 
 ```bash
-docker run -it -v ".:/download" ghcr.io/jim60105/yt-dlp [OPTIONS] [--] URL [URL...]
+docker run -it -v ".:/download" ghcr.io/jim60105/yt-dlp:pot [OPTIONS] [--] URL [URL...]
 ```
 
 The `[OPTIONS]`, `[URL...]` placeholder should be replaced with the options and arguments for yt-dlp. Check the [yt-dlp README](https://github.com/yt-dlp/yt-dlp?tab=readme-ov-file#usage-and-options) for more information.
 
 You can find all available tags at [ghcr.io](https://github.com/jim60105/yt-dlp/pkgs/container/yt-dlp/versions?filters%5Bversion_type%5D=tagged) or [quay.io](https://quay.io/repository/jim60105/yt-dlp?tab=tags).
+
+> [!TIP]
+>
+> If you're experiencing YouTube bot detection issues (HTTP 403 errors, "Sign in to confirm you're not a bot" messages), consider using the _**POT provider version**_ which includes automatic token generation to help bypass these restrictions.
 
 ## Building the Docker Image
 
@@ -55,11 +59,6 @@ docker build --build-arg BUILD_VERSION=2025.06.30 -f ./ubi.Dockerfile -t yt-dlp:
 docker build --build-arg BUILD_VERSION=2025.06.30 -f ./distroless.Dockerfile -t yt-dlp:distroless .
 docker build --build-arg BUILD_VERSION=2025.06.30 --build-arg POT_PROVIDER_VERSION=1.1.0 -f ./pot.Dockerfile -t yt-dlp:pot .
 ```
-
-> [!TIP]
-> I've notice that that both the UBI version and the Distroless version offer no advantages over the Alpine version. So _**please use the Alpine version**_ unless you have specific reasons not to. All of these base images are great, some of them were simply not that suitable for our project.
->
-> If you're experiencing YouTube bot detection issues (HTTP 403 errors, "Sign in to confirm you're not a bot" messages), consider using the _**POT provider version**_ which includes automatic token generation to help bypass these restrictions.
 
 > [!NOTE]  
 > If you are using an earlier version of the docker client, it is necessary to [enable the BuildKit mode](https://docs.docker.com/build/buildkit/#getting-started) when building the image. This is because I used the `COPY --link` feature which enhances the build performance and was introduced in Buildx v0.8.  
