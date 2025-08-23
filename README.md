@@ -39,7 +39,7 @@ This repository contains five Dockerfiles for building Docker images based on di
 
 ### Build Arguments
 
-The [alpine.Dockerfile](alpine.Dockerfile), [ubi.Dockerfile](ubi.Dockerfile), [distroless.Dockerfile](distroless.Dockerfile), and [pot.Dockerfile](pot.Dockerfile) are built using a build argument called `BUILD_VERSION`. This argument represents [the release version of yt-dlp](https://github.com/yt-dlp/yt-dlp/tags), such as `2025.06.30` or `2025.06.25`.
+The [alpine.Dockerfile](alpine.Dockerfile), [ubi.Dockerfile](ubi.Dockerfile), [distroless.Dockerfile](distroless.Dockerfile), and [pot.Dockerfile](pot.Dockerfile) are built using a build argument called `BUILD_VERSION`. This argument represents [the release version of yt-dlp](https://github.com/yt-dlp/yt-dlp/tags), such as `2025.08.22` or `2025.06.25`.
 
 The [pot.Dockerfile](pot.Dockerfile) also uses an additional `POT_PROVIDER_VERSION` argument to specify the version of the bgutil-ytdlp-pot-provider.
 
@@ -54,10 +54,10 @@ It is important to note that the [Dockerfile](Dockerfile) always builds with [th
 
 ```bash
 docker build -t yt-dlp .
-docker build --build-arg BUILD_VERSION=2025.06.30 -f ./alpine.Dockerfile -t yt-dlp:alpine .
-docker build --build-arg BUILD_VERSION=2025.06.30 -f ./ubi.Dockerfile -t yt-dlp:ubi .
-docker build --build-arg BUILD_VERSION=2025.06.30 -f ./distroless.Dockerfile -t yt-dlp:distroless .
-docker build --build-arg BUILD_VERSION=2025.06.30 --build-arg POT_PROVIDER_VERSION=1.1.0 -f ./pot.Dockerfile -t yt-dlp:pot .
+docker build --build-arg BUILD_VERSION=2025.08.22 -f ./alpine.Dockerfile -t yt-dlp:alpine .
+docker build --build-arg BUILD_VERSION=2025.08.22 -f ./ubi.Dockerfile -t yt-dlp:ubi .
+docker build --build-arg BUILD_VERSION=2025.08.22 -f ./distroless.Dockerfile -t yt-dlp:distroless .
+docker build --build-arg BUILD_VERSION=2025.08.22 --build-arg POT_PROVIDER_VERSION=1.1.0 -f ./pot.Dockerfile -t yt-dlp:pot .
 ```
 
 > [!NOTE]  

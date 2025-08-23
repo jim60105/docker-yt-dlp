@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-ARG VERSION=2025.06.30
+ARG VERSION=2025.08.22
 ARG RELEASE=0
 
 ########################################
@@ -46,11 +46,11 @@ COPY --link --chown=$UID:0 --chmod=775 --from=build /newdir /download
 COPY --link --chown=$UID:0 --chmod=775 --from=build /newdir /licenses
 
 # ffmpeg
-COPY --link --from=ghcr.io/jim60105/static-ffmpeg-upx:7.1.1 /ffmpeg /usr/bin/
-COPY --link --from=ghcr.io/jim60105/static-ffmpeg-upx:7.1.1 /ffprobe /usr/bin/
+COPY --link --from=ghcr.io/jim60105/static-ffmpeg-upx:8.0 /ffmpeg /usr/bin/
+COPY --link --from=ghcr.io/jim60105/static-ffmpeg-upx:8.0 /ffprobe /usr/bin/
 
 # dumb-init
-COPY --link --from=ghcr.io/jim60105/static-ffmpeg-upx:7.1.1 /dumb-init /usr/bin/
+COPY --link --from=ghcr.io/jim60105/static-ffmpeg-upx:8.0 /dumb-init /usr/bin/
 
 # Copy licenses (OpenShift Policy)
 COPY --link --chown=$UID:0 --chmod=775 LICENSE /licenses/Dockerfile.LICENSE

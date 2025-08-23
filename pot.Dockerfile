@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 ARG UID=1001
-ARG VERSION=2025.06.30
+ARG VERSION=2025.08.22
 ARG RELEASE=0
 ARG POT_PROVIDER_VERSION=1.1.0
 
@@ -45,11 +45,11 @@ COPY --link --chown=$UID:0 --chmod=775 yt-dlp/LICENSE /licenses/yt-dlp.LICENSE
 COPY --link --chown=$UID:0 --chmod=775 --from=bgutil-ytdlp-pot-provider-unpacker /client /etc/yt-dlp-plugins/bgutil-ytdlp-pot-provider
 
 # ffmpeg
-COPY --link --from=ghcr.io/jim60105/static-ffmpeg-upx:7.1.1 /ffmpeg /usr/bin/
-COPY --link --from=ghcr.io/jim60105/static-ffmpeg-upx:7.1.1 /ffprobe /usr/bin/
+COPY --link --from=ghcr.io/jim60105/static-ffmpeg-upx:8.0 /ffmpeg /usr/bin/
+COPY --link --from=ghcr.io/jim60105/static-ffmpeg-upx:8.0 /ffprobe /usr/bin/
 
 # dumb-init
-COPY --link --from=ghcr.io/jim60105/static-ffmpeg-upx:7.1.1 /dumb-init /usr/bin/
+COPY --link --from=ghcr.io/jim60105/static-ffmpeg-upx:8.0 /dumb-init /usr/bin/
 
 # Ensure the cache is not reused when installing yt-dlp
 ARG RELEASE
