@@ -35,13 +35,11 @@ This repository contains five Dockerfiles for building Docker images based on di
 | [alpine.Dockerfile](alpine.Dockerfile)         | [Python official image 3.12-alpine](https://hub.docker.com/_/python/)                                                              |
 | [ubi.Dockerfile](ubi.Dockerfile)               | [Red Hat Universal Base Image 9 Minimal](https://catalog.redhat.com/software/containers/ubi9/ubi-minimal/615bd9b4075b022acc111bf5) |
 | [distroless.Dockerfile](distroless.Dockerfile) | [distroless-python](https://github.com/alexdmoss/distroless-python)                                                                |
-| [pot.Dockerfile](pot.Dockerfile)               | [bgutil-ytdlp-pot-provider](https://hub.docker.com/r/brainicism/bgutil-ytdlp-pot-provider)                                          |
+| [pot.Dockerfile](pot.Dockerfile)               | from scratch                                          |
 
 ### Build Arguments
 
 The [alpine.Dockerfile](alpine.Dockerfile), [ubi.Dockerfile](ubi.Dockerfile), [distroless.Dockerfile](distroless.Dockerfile), and [pot.Dockerfile](pot.Dockerfile) are built using a build argument called `BUILD_VERSION`. This argument represents [the release version of yt-dlp](https://github.com/yt-dlp/yt-dlp/tags), such as `2025.08.22` or `2025.06.25`.
-
-The [pot.Dockerfile](pot.Dockerfile) also uses an additional `POT_PROVIDER_VERSION` argument to specify the version of the bgutil-ytdlp-pot-provider.
 
 It is important to note that the [Dockerfile](Dockerfile) always builds with [the latest apk package source](https://pkgs.alpinelinux.org/package/edge/community/aarch64/yt-dlp), so it can't set the build version explicitly.
 
@@ -57,16 +55,12 @@ docker build -t yt-dlp .
 docker build --build-arg BUILD_VERSION=2025.08.22 -f ./alpine.Dockerfile -t yt-dlp:alpine .
 docker build --build-arg BUILD_VERSION=2025.08.22 -f ./ubi.Dockerfile -t yt-dlp:ubi .
 docker build --build-arg BUILD_VERSION=2025.08.22 -f ./distroless.Dockerfile -t yt-dlp:distroless .
-docker build --build-arg BUILD_VERSION=2025.08.22 --build-arg POT_PROVIDER_VERSION=1.1.0 -f ./pot.Dockerfile -t yt-dlp:pot .
+docker build --build-arg BUILD_VERSION=2025.08.22 -f ./pot.Dockerfile -t yt-dlp:pot .
 ```
-
-> [!NOTE]  
-> If you are using an earlier version of the docker client, it is necessary to [enable the BuildKit mode](https://docs.docker.com/build/buildkit/#getting-started) when building the image. This is because I used the `COPY --link` feature which enhances the build performance and was introduced in Buildx v0.8.  
-> With the Docker Engine 23.0 and Docker Desktop 4.19, Buildx has become the default build client. So you won't have to worry about this when using the latest version.
 
 ## POT Provider Variant
 
-The POT (Proof of Origin Token) provider variant is designed to help bypass YouTube's bot detection mechanisms. This variant includes the [bgutil-ytdlp-pot-provider](https://github.com/Brainicism/bgutil-ytdlp-pot-provider) which automatically generates POT tokens to make your yt-dlp requests appear more legitimate to YouTube's servers.
+The POT (Proof of Origin Token) provider variant is designed to help bypass YouTube's bot detection mechanisms. This variant includes the [bgutil-ytdlp-pot-provider-rs](https://github.com/jim60105/bgutil-ytdlp-pot-provider-rs) which automatically generates POT tokens to make your yt-dlp requests appear more legitimate to YouTube's servers.
 
 ### Why Use POT Provider?
 
