@@ -2,54 +2,49 @@
 ARG UID=1001
 ARG VERSION=2025.08.22
 ARG RELEASE=0
-ARG POT_PROVIDER_VERSION=1.1.0
 
 ########################################
-# bgutil-ytdlp-pot-provider unpack stage
+# folder stage
 ########################################
+FROM alpine:3 AS folder
 
-FROM alpine:3 AS bgutil-ytdlp-pot-provider-unpacker
-
-WORKDIR /bgutil-ytdlp-pot-provider
-
-ARG POT_PROVIDER_VERSION
-ADD https://github.com/Brainicism/bgutil-ytdlp-pot-provider/releases/download/${POT_PROVIDER_VERSION}/bgutil-ytdlp-pot-provider.zip /tmp/bgutil-ytdlp-pot-provider.zip
-
-RUN unzip /tmp/bgutil-ytdlp-pot-provider.zip -d /client
+# Create directories with correct permissions
+ARG UID
+RUN install -d -m 775 -o $UID -g 0 /newdir
 
 ########################################
 # Final stage
-# https://github.com/Brainicism/bgutil-ytdlp-pot-provider/blob/master/server/Dockerfile
 ########################################
-FROM brainicism/bgutil-ytdlp-pot-provider:${POT_PROVIDER_VERSION} AS final
+FROM scratch AS final
 
-# RUN mount cache for multi-arch: https://github.com/docker/buildx/issues/549#issuecomment-1788297892
-ARG TARGETARCH
-ARG TARGETVARIANT
+# Copy CA trust store
+# Rust seems to use this one: https://stackoverflow.com/a/57295149/8706033
+COPY --from=alpine:3 /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
-# Create user
 ARG UID
-RUN groupadd -g $UID $UID && \
-    useradd -l -u $UID -g $UID -m -s /bin/sh -N $UID
 
 # Create directories with correct permissions
-RUN install -d -m 775 -o $UID -g 0 /download && \
-    install -d -m 775 -o $UID -g 0 /licenses && \
-    install -d -m 775 -o $UID -g 0 /etc/yt-dlp-plugins/bgutil-ytdlp-pot-provider
+COPY --chown=$UID:0 --chmod=775 --from=folder /newdir /licenses
+COPY --chown=$UID:0 --chmod=775 --from=folder /newdir /etc/yt-dlp-plugins/bgutil-ytdlp-pot-provider
+COPY --link --chown=$UID:0 --chmod=775 --from=folder /newdir /download
+COPY --link --chown=$UID:0 --chmod=775 --from=folder /newdir /tmp
 
 # Copy licenses (OpenShift Policy)
 COPY --link --chown=$UID:0 --chmod=775 LICENSE /licenses/Dockerfile.LICENSE
 COPY --link --chown=$UID:0 --chmod=775 yt-dlp/LICENSE /licenses/yt-dlp.LICENSE
 
-# Copy BgUtils POT Provider
-COPY --link --chown=$UID:0 --chmod=775 --from=bgutil-ytdlp-pot-provider-unpacker /client /etc/yt-dlp-plugins/bgutil-ytdlp-pot-provider
-
 # ffmpeg
-COPY --link --from=ghcr.io/jim60105/static-ffmpeg-upx:8.0 /ffmpeg /usr/bin/
-COPY --link --from=ghcr.io/jim60105/static-ffmpeg-upx:8.0 /ffprobe /usr/bin/
+COPY --link --chown=$UID:0 --chmod=775 --from=ghcr.io/jim60105/static-ffmpeg-upx:8.0 /ffmpeg /usr/bin/
+COPY --link --chown=$UID:0 --chmod=775 --from=ghcr.io/jim60105/static-ffmpeg-upx:8.0 /ffprobe /usr/bin/
 
 # dumb-init
-COPY --link --from=ghcr.io/jim60105/static-ffmpeg-upx:8.0 /dumb-init /usr/bin/
+COPY --link --chown=$UID:0 --chmod=775 --from=ghcr.io/jim60105/static-ffmpeg-upx:8.0 /dumb-init /usr/bin/
+
+# BgUtil POT provider
+COPY --link --chown=$UID:0 --chmod=775 --from=ghcr.io/jim60105/bgutil-pot:latest /bgutil-pot /usr/bin/
+
+# BgUtil POT client
+COPY --link --chown=$UID:0 --chmod=775 --from=ghcr.io/jim60105/bgutil-pot:latest /client /etc/yt-dlp-plugins/bgutil-ytdlp-pot-provider
 
 # Ensure the cache is not reused when installing yt-dlp
 ARG RELEASE
@@ -67,8 +62,7 @@ USER $UID
 STOPSIGNAL SIGINT
 
 # Use dumb-init as PID 1 to handle signals properly
-# Run POT node script in background, yt-dlp in foreground
-ENTRYPOINT [ "dumb-init", "--", "sh", "-c", "node /app/build/main.js & exec yt-dlp --no-cache-dir \"$@\"", "sh" ]
+ENTRYPOINT [ "dumb-init", "--", "yt-dlp", "--no-cache-dir" ]
 CMD ["--help"]
 
 ARG VERSION
