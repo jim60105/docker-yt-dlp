@@ -83,7 +83,7 @@ Use the POT variant with the `:pot` tag:
 docker run -it -v ".:/download" ghcr.io/jim60105/yt-dlp:pot [OPTIONS] [--] URL [URL...]
 ```
 
-The POT provider runs as a background service within the container and automatically provides tokens to yt-dlp when needed. No additional configuration is required for basic usage.
+The POT provider will run automatically and supply tokens to yt-dlp as needed. No additional configuration is required for basic use.
 
 ## LICENSE
 
