@@ -53,6 +53,8 @@ ARG VERSION
 # yt-dlp
 ADD --link --chown=$UID:0 --chmod=775 https://github.com/yt-dlp/yt-dlp/releases/download/${VERSION}/yt-dlp_linux /usr/bin/yt-dlp
 
+ENV PATH="/usr/bin:${PATH}"
+
 WORKDIR /download
 
 VOLUME [ "/download" ]
@@ -62,7 +64,7 @@ USER $UID
 STOPSIGNAL SIGINT
 
 # Use dumb-init as PID 1 to handle signals properly
-ENTRYPOINT [ "dumb-init", "--", "yt-dlp", "--no-cache-dir" ]
+ENTRYPOINT [ "dumb-init", "--", "/usr/bin/yt-dlp", "--no-cache-dir" ]
 CMD ["--help"]
 
 ARG VERSION
