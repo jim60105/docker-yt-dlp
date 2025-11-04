@@ -28,18 +28,18 @@ COPY --link --chown=$UID:0 --chmod=775 yt-dlp/LICENSE /licenses/yt-dlp.LICENSE
 ARG RELEASE=0
 
 RUN --mount=type=cache,id=apk-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/var/cache/apk \
-    --mount=from=ghcr.io/jim60105/static-ffmpeg-upx:8.0,source=/ffmpeg,target=/ffmpeg,rw \
-    --mount=from=ghcr.io/jim60105/static-ffmpeg-upx:8.0,source=/ffprobe,target=/ffprobe,rw \
-    --mount=from=ghcr.io/jim60105/static-ffmpeg-upx:8.0,source=/dumb-init,target=/dumb-init,rw \
+    --mount=from=ghcr.io/jim60105/static-ffmpeg-upx:8.0,source=/ffmpeg,target=/tmp/ffmpeg \
+    --mount=from=ghcr.io/jim60105/static-ffmpeg-upx:8.0,source=/ffprobe,target=/tmp/ffprobe \
+    --mount=from=ghcr.io/jim60105/static-ffmpeg-upx:8.0,source=/dumb-init,target=/tmp/dumb-init \
     apk update && apk add -u \
     # These branches follows the yt-dlp release
     -X "https://dl-cdn.alpinelinux.org/alpine/edge/main" \
     -X "https://dl-cdn.alpinelinux.org/alpine/edge/community" \
     yt-dlp && \
     # Copy the compressed ffmpeg and ffprobe and overwrite the apk installed ones
-    cp /ffmpeg /usr/bin/ && \
-    cp /ffprobe /usr/bin/ && \
-    cp /dumb-init /usr/bin/
+    cp /tmp/ffmpeg /usr/bin/ && \
+    cp /tmp/ffprobe /usr/bin/ && \
+    cp /tmp/dumb-init /usr/bin/
 
 # Remove these to prevent the container from executing arbitrary commands
 RUN rm /bin/echo /bin/ln /bin/rm /bin/sh

@@ -21,6 +21,10 @@ FROM scratch AS final
 # Rust seems to use this one: https://stackoverflow.com/a/57295149/8706033
 COPY --from=alpine:3 /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
+# Copy dynamic linker and required shared libraries for yt-dlp_musllinux
+COPY --from=alpine:3 /lib/ld-musl-x86_64.so.1 /lib/
+COPY --from=alpine:3 /usr/lib/libz.so.1 /usr/lib/
+
 ARG UID
 
 # Create directories with correct permissions
@@ -50,10 +54,8 @@ COPY --link --chown=$UID:0 --chmod=775 --from=ghcr.io/jim60105/bgutil-pot:latest
 ARG RELEASE
 ARG VERSION
 
-# yt-dlp
-ADD --link --chown=$UID:0 --chmod=775 https://github.com/yt-dlp/yt-dlp/releases/download/${VERSION}/yt-dlp_linux /usr/bin/yt-dlp
-
-ENV PATH="/usr/bin:${PATH}"
+# yt-dlp (using musllinux build for compatibility with musl libc from Alpine)
+ADD --link --chown=$UID:0 --chmod=775 https://github.com/yt-dlp/yt-dlp/releases/download/${VERSION}/yt-dlp_musllinux /usr/bin/yt-dlp
 
 WORKDIR /download
 
@@ -64,7 +66,7 @@ USER $UID
 STOPSIGNAL SIGINT
 
 # Use dumb-init as PID 1 to handle signals properly
-ENTRYPOINT [ "dumb-init", "--", "/usr/bin/yt-dlp", "--no-cache-dir" ]
+ENTRYPOINT [ "dumb-init", "--", "yt-dlp", "--no-cache-dir" ]
 CMD ["--help"]
 
 ARG VERSION
