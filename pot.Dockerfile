@@ -15,15 +15,7 @@ RUN install -d -m 775 -o $UID -g 0 /newdir
 ########################################
 # Final stage
 ########################################
-FROM scratch AS final
-
-# Copy CA trust store
-# Rust seems to use this one: https://stackoverflow.com/a/57295149/8706033
-COPY --from=alpine:3 /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-
-# Copy dynamic linker and required shared libraries for yt-dlp_musllinux
-COPY --from=alpine:3 /lib/ld-musl-x86_64.so.1 /lib/
-COPY --from=alpine:3 /usr/lib/libz.so.1 /usr/lib/
+FROM docker.io/denoland/deno:distroless AS final
 
 ARG UID
 
@@ -54,8 +46,8 @@ COPY --link --chown=$UID:0 --chmod=775 --from=ghcr.io/jim60105/bgutil-pot:latest
 ARG RELEASE
 ARG VERSION
 
-# yt-dlp (using musllinux build for compatibility with musl libc from Alpine)
-ADD --link --chown=$UID:0 --chmod=775 https://github.com/yt-dlp/yt-dlp/releases/download/${VERSION}/yt-dlp_musllinux /usr/bin/yt-dlp
+# yt-dlp
+ADD --link --chown=$UID:0 --chmod=775 https://github.com/yt-dlp/yt-dlp/releases/download/${VERSION}/yt-dlp_linux /usr/bin/yt-dlp
 
 WORKDIR /download
 

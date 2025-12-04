@@ -35,7 +35,8 @@ This repository contains five Dockerfiles for building Docker images based on di
 | [alpine.Dockerfile](alpine.Dockerfile)         | [Python official image 3.12-alpine](https://hub.docker.com/_/python/)                                                              |
 | [ubi.Dockerfile](ubi.Dockerfile)               | [Red Hat Universal Base Image 9 Minimal](https://catalog.redhat.com/software/containers/ubi9/ubi-minimal/615bd9b4075b022acc111bf5) |
 | [distroless.Dockerfile](distroless.Dockerfile) | [distroless-python](https://github.com/alexdmoss/distroless-python)                                                                |
-| [pot.Dockerfile](pot.Dockerfile)               | from scratch                                          |
+| [pot.Dockerfile](pot.Dockerfile)               | [docker.io/denoland/deno:distroless
+](<https://hub.docker.com/r/denoland/deno>)                                          |
 
 ### Build Arguments
 
