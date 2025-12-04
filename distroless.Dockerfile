@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-ARG VERSION=2025.08.22
+ARG VERSION=2025.11.12
 ARG RELEASE=0
 
 ########################################
