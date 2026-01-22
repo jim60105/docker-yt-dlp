@@ -15,7 +15,7 @@ RUN install -d -m 775 -o $UID -g 0 /newdir
 ########################################
 # Final stage
 ########################################
-FROM docker.io/denoland/deno:distroless AS final
+FROM docker.io/denoland/deno:debian AS final
 
 ARG UID
 
