@@ -2,6 +2,7 @@
 ARG UID=1001
 ARG VERSION=2025.12.08
 ARG RELEASE=0
+ARG NIGHTLY=
 
 ########################################
 # folder stage
@@ -15,7 +16,7 @@ RUN install -d -m 775 -o $UID -g 0 /newdir
 ########################################
 # Final stage
 ########################################
-FROM docker.io/denoland/deno:debian AS final
+FROM docker.io/denoland/deno:alpine AS final
 
 ARG UID
 
@@ -24,6 +25,7 @@ COPY --chown=$UID:0 --chmod=775 --from=folder /newdir /licenses
 COPY --chown=$UID:0 --chmod=775 --from=folder /newdir /etc/yt-dlp-plugins/bgutil-ytdlp-pot-provider
 COPY --link --chown=$UID:0 --chmod=775 --from=folder /newdir /download
 COPY --link --chown=$UID:0 --chmod=775 --from=folder /newdir /tmp
+COPY --link --chown=$UID:0 --chmod=775 --from=folder /newdir /.cache
 
 # Copy licenses (OpenShift Policy)
 COPY --link --chown=$UID:0 --chmod=775 LICENSE /licenses/Dockerfile.LICENSE
@@ -45,9 +47,10 @@ COPY --link --chown=$UID:0 --chmod=775 --from=ghcr.io/jim60105/bgutil-pot:latest
 # Ensure the cache is not reused when installing yt-dlp
 ARG RELEASE
 ARG VERSION
+ARG NIGHTLY
 
 # yt-dlp
-ADD --link --chown=$UID:0 --chmod=775 https://github.com/yt-dlp/yt-dlp/releases/download/${VERSION}/yt-dlp_linux /usr/bin/yt-dlp
+ADD --link --chown=$UID:0 --chmod=775 https://github.com/yt-dlp/yt-dlp${NIGHTLY:+-nightly-builds}/releases/download/${VERSION}/yt-dlp_linux /usr/bin/yt-dlp
 
 WORKDIR /download
 
