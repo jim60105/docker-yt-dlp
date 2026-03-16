@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: 'true'
 
@@ -38,7 +38,7 @@ jobs:
 
       - name: Build and push
         id: build_push
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: ./Dockerfile
@@ -57,19 +57,19 @@ jobs:
           provenance: true
           
       - name: Add attestations for GitHub Container Registry
-        uses: actions/attest-build-provenance@v2
+        uses: actions/attest-build-provenance@v4
         with:
           subject-name: ghcr.io/${{ github.repository_owner }}/yt-dlp
           subject-digest: ${{ steps.build_push.outputs.digest }}
 
       - name: Add attestations for DockerHub
-        uses: actions/attest-build-provenance@v2
+        uses: actions/attest-build-provenance@v4
         with:
           subject-name: ${{ secrets.DOCKERHUB_USERNAME }}/yt-dlp
           subject-digest: ${{ steps.build_push.outputs.digest }}
 
       - name: Add attestations for Quay
-        uses: actions/attest-build-provenance@v2
+        uses: actions/attest-build-provenance@v4
         with:
           subject-name: quay.io/${{ github.repository_owner }}/yt-dlp
           subject-digest: ${{ steps.build_push.outputs.digest }}
