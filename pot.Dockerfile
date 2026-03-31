@@ -50,7 +50,7 @@ ARG VERSION
 ARG NIGHTLY
 
 # yt-dlp
-ADD --link --chown=$UID:0 --chmod=775 https://github.com/yt-dlp/yt-dlp${NIGHTLY:+-nightly-builds}/releases/download/${VERSION}/yt-dlp_linux /usr/bin/yt-dlp
+ADD --link --chown=$UID:0 --chmod=775 https://github.com/yt-dlp/yt-dlp${NIGHTLY:+-nightly-builds}/releases/download/${VERSION}/yt-dlp_musllinux /usr/bin/yt-dlp
 
 WORKDIR /download
 
